@@ -64,3 +64,7 @@ db.hotels.find({
   "grades.score": { $gt: 70 },
   "address.coord": { $lt: -65.754168 },
 });
+
+
+// Q11: Uses $and explicitly.
+// Q12: Uses MongoDB’s implicit AND by writing multiple conditions directly in the query object.
