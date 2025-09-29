@@ -29,6 +29,13 @@ db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90 } } } });
 db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90, $lt: 100 } } } });
 
 //10. Write a MongoDB query to find the restaurants which locate in latitude value less than -95.754168.
-db.hotels.find({"address.coord" : {$lt : -95.754168}})
+db.hotels.find({ "address.coord": { $lt: -95.754168 } });
 
 //11. Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and their grade score more than 70 and latitude less than -65.754168.
+db.hotels.find({
+  $and: [
+    { cuisine: { $ne: "American " } },
+    { "grades.score": { $gt: 70 } },
+    { "address.coord": { $lt: -65.754168 } },
+  ],
+});
