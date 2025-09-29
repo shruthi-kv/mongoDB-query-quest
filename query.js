@@ -24,6 +24,24 @@ db.hotels.find({ borough: "Bronx" }).skip(5).limit(5);
 
 //8. Write a MongoDB query to find the restaurants who achieved a score more than 90.
 db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90 } } } });
+db.hotels.find({ "grades.score": { $gt: 70 }});
+
+// $elemMatch forces MongoDB to look within the same subdocument (element of the grades array).
+
+// It will return documents where at least one grade object has a score > 90.
+
+// 👉 Example:
+// If a grades element is { "grade": "A", "score": 95 }, this document qualifies.
+// If one element has score: 95 and another has score: 2, it still matches because of the 95.
+
+// Dot notation without $elemMatch means:
+// “Does the array grades contain any subdocument where score > 70?”
+
+// MongoDB will check each subdocument independently and match if at least one grades.score is > 70.
+
+// 👉 Example:
+// If any grades element has score: 75, the document matches.
+
 
 //9. Write a MongoDB query to find the restaurants that achieved a score, more than 80 but less than 100.
 db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90, $lt: 100 } } } });
