@@ -24,7 +24,7 @@ db.hotels.find({ borough: "Bronx" }).skip(5).limit(5);
 
 //8. Write a MongoDB query to find the restaurants who achieved a score more than 90.
 db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90 } } } });
-db.hotels.find({ "grades.score": { $gt: 70 }});
+db.hotels.find({ "grades.score": { $gt: 70 } });
 
 // $elemMatch forces MongoDB to look within the same subdocument (element of the grades array).
 
@@ -42,7 +42,6 @@ db.hotels.find({ "grades.score": { $gt: 70 }});
 // 👉 Example:
 // If any grades element has score: 75, the document matches.
 
-
 //9. Write a MongoDB query to find the restaurants that achieved a score, more than 80 but less than 100.
 db.hotels.find({ grades: { $elemMatch: { score: { $gt: 90, $lt: 100 } } } });
 
@@ -56,4 +55,12 @@ db.hotels.find({
     { "grades.score": { $gt: 70 } },
     { "address.coord": { $lt: -65.754168 } },
   ],
+});
+
+// 12. Write a MongoDB query to find the restaurants which do not prepare any cuisine of 'American' and achieved a score more than 70 and located in the longitude less than -65.754168.
+// Note : Do this query without using $and operator.
+db.hotels.find({
+  cuisine: { $ne: "American" },
+  "grades.score": { $gt: 70 },
+  "address.coord": { $lt: -65.754168 },
 });
