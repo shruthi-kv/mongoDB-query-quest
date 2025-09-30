@@ -116,12 +116,248 @@ db.hotels.find(
 );
 
 // 20. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which achieved a score which is not more than 10.
+db.hotels.find(
+  {
+    "grades.score": { $lte: 10 },
+  },
+  { restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+);
+
+db.hotels.find(
+  {
+    "grades.score": { $not: { $gt: 10 } },
+  },
+  { restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+);
+
+// 21. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepared dish except 'American' and 'Chinees' or restaurant's name begins with letter 'Wil'.
+
+db.hotels.find(
+  {
+    $or: [
+      { name: /^Wil/ },
+      {
+        $and: [
+          { cuisine: { $ne: "American" } },
+          { cuisine: { $ne: "Chinees" } },
+        ],
+      },
+    ],
+  },
+  { restaurant_id: 1, name: 1, borough: 1, cuisine: 1 }
+);
+
+// 22. Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an ISODate "2014-08-11T00:00:00Z" among many of survey dates..
+db.hotels
+  .find(
+    {
+      grades: {
+        $elemMatch: {
+          date: ISODate("2014-08-11T00:00:00Z"),
+          grade: "A",
+          score: 11,
+        },
+      },
+    },
+    {
+      restaurant_id: 1,
+      name: 1,
+      grades: 1,
+    }
+  )
+  .pretty();
+
+// 23. Write a MongoDB query to find the restaurant Id, name and grades for those restaurants where the 2nd element of grades array contains a grade of "A" and score 9 on an ISODate "2014-08-11T00:00:00Z".
+db.hotels
+  .find(
+    {
+      "grades.1.grade": "A",
+      "grades.1.score": 9,
+      "grades.1.date": ISODate("2014-08-11T00:00:00Z"),
+    },
+    {
+      restaurant_id: 1,
+      name: 1,
+      grades: 1,
+    }
+  )
+  .pretty();
+
+// 24. Write a MongoDB query to find the restaurant Id, name, address and geographical location for those restaurants where 2nd element of coord array contains a value which is more than 42 and upto 52..
+db.hotels.find(
+  {
+    "address.coord.1": { $gt: 42, $lte: 52 },
+  },
+  { restaurant_id: 1, name: 1, address: 1, coord: 1 }
+);
+
+// 25. Write a MongoDB query to arrange the name of the restaurants in ascending order along with all the columns.
+db.hotels.find().sort({ name: 1 });
+
+// 26. Write a MongoDB query to arrange the name of the restaurants in descending along with all the columns.
+db.hotels.find().sort({ name: -1 });
+
+// 27. Write a MongoDB query to arranged the name of the cuisine in ascending order and for that same cuisine borough should be in descending order.
+db.hotels.find().sort({ cuisine: 1 }, { borough: -1 });
+
+// 28. Write a MongoDB query to know whether all the addresses contains the street or not.
 db.hotels.find({
- "grades.score" : {$lte : 10}
-},{restaurant_id:1,name:1,borough:1,cuisine:1})
+  "address.street": { $exists: true },
+});
 
-
-
+// 29. Write a MongoDB query which will select all documents in the restaurants collection where the coord field value is Double.
 db.hotels.find({
- "grades.score" : {$not : {$gt :10}}
-},{restaurant_id:1,name:1,borough:1,cuisine:1})
+  "address.coord": { $type: 1 },
+});
+
+// 30. Write a MongoDB query which will select the restaurant Id, name and grades for those restaurants which returns 0 as a remainder after dividing the score by 7.
+db.restaurants.find(
+  { "grades.score": { $mod: [7, 0] } },
+  { restaurant_id: 1, name: 1, grades: 1 }
+);
+
+//31. Write a MongoDB query to find the restaurant name, borough, longitude and attitude and cuisine for those restaurants which contains 'mon' as three letters somewhere in its name.
+db.hotels.find(
+  { name: /mon/ },
+  {
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    "address.coord.0": 1,
+    "address.coord.1": 1,
+    cuisine: 1,
+  }
+);
+// -----or ------
+db.hotels.find(
+  {
+    name: { $regex: /mon/i },
+  },
+
+  {
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    "address.coord.0": 1,
+    "address.coord.1": 1,
+    cuisine: 1,
+  }
+);
+//32. Write a MongoDB query to find the restaurant name, borough, longitude and latitude and cuisine for those restaurants which contain 'Mad' as first three letters of its name.
+db.hotels.find(
+  {
+    name: { $regex: /^Mad/ },
+  },
+
+  {
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    "address.coord.0": 1,
+    "address.coord.1": 1,
+    cuisine: 1,
+  }
+);
+
+
+//33. Write a MongoDB query to find the restaurants that have at least one grade with a score of less than 5.
+db.hotels.find({
+  "grades.score"  : {$lt :5}
+})
+
+
+//34. Write a MongoDB query to find the restaurants that have at least one grade with a score of less than 5 and that are located in the borough of Manhattan.
+db.hotels.find({
+  $and :[
+    {"grades.score" :{$lt :5}},
+    {borough :"Manhattan"}
+  ]
+})
+
+//35. Write a MongoDB query to find the restaurants that have at least one grade with a score of less than 5 and that are located in the borough of Manhattan or Brooklyn.
+db.hotels.find({
+  $and :[
+    {"grades.score" : {$lt :5}},
+    {$or :[{borough : "Brooklyn"},{borough :"Manhattan"}]}
+  ]
+})
+//36. Write a MongoDB query to find the restaurants that have at least one grade with a score of less than 5 and that are located in the borough of Manhattan or Brooklyn, and their cuisine is not American.
+db.hotels.find({
+    $and: [
+        {
+            $or: [
+                {borough: "Manhattan"},
+                {borough: "Brooklyn"}
+            ]
+        },
+        {
+            $nor: [
+                {cuisine: "American"},
+                {cuisine: "Chinese"}
+            ]
+        },
+        {
+grades: {
+                $elemMatch: {
+score: { $lt: 5 }
+                }
+            }
+        }
+    ]
+})
+//37. Write a MongoDB query to find the restaurants that have at least one grade with a score of less than 5 and that are located in the borough of Manhattan or Brooklyn, and their cuisine is not American or Chinese.
+db.hotels.find({
+    $and: [
+        {
+            $or: [
+                {borough: "Manhattan"},
+                {borough: "Brooklyn"}
+            ]
+        },
+        {
+            $nor: [
+                {cuisine: "American"},
+                {cuisine: "Chinese"}
+            ]
+        },
+        {
+grades: {
+                $elemMatch: {
+score: { $lt: 5 }
+                }
+            }
+        }
+    ]
+})
+//38. Write a MongoDB query to find the restaurants that have a grade with a score of 2 and a grade with a score of 6.
+db.hotels.find(
+  {
+    $and : [{"grades.score":2},{"grades.score" :6}]
+  }
+)
+
+//39. Write a MongoDB query to find the restaurants that have a grade with a score of 2 and a grade with a score of 6 and are located in the borough of Manhattan.
+db.hotels.find(
+  {
+    $and : [{"grades.score":2},{"grades.score" :6},{borough :"Manhattan"}]
+  }
+)
+//40. Write a MongoDB query to find the restaurants that have a grade with a score of 2 and a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn.
+db.hotels.find(
+  {
+    $and : [{"grades.score":2},{"grades.score" :6},
+            {$or : [{borough :"Manhattan"},{borough :"Brooklyn"}]}
+            
+           ]
+  }
+)
+
+/// or
+
+db.restaurants.find({
+  $and: [
+    {"grades.score": 2},
+    {"grades.score": 6},
+    {"borough": {"$in": ["Manhattan", "Brooklyn"]}}
+  ]
+})
