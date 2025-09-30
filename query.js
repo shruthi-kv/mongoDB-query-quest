@@ -361,3 +361,87 @@ db.restaurants.find({
     {"borough": {"$in": ["Manhattan", "Brooklyn"]}}
   ]
 })
+
+
+
+// 41. Write a MongoDB query to find the restaurants that have a grade with a score of 2 and a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn, and their cuisine is not American.
+
+db.hotels.find({
+  $and :[
+    {$and :[{"grades.score" : 2},{"grades.score" :6}]},
+    {$or : [{borough : "Manhattan"},{borough : "Brooklyn"}]}
+  ]
+}).count()
+
+
+// 42. Write a MongoDB query to find the restaurants that have a grade with a score of 2 and a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn, and their cuisine is not American or Chinese.
+
+db.hotels.find({
+  $and: [
+    {"grades.score": 2},
+    {"grades.score": 6},
+    {"borough": "Manhattan"},
+    {$nor : [{"cuisine" : "American"},{"cuisine" : "Chinese"} ]}
+  ]
+}).count()
+
+// 43. Write a MongoDB query to find the restaurants that have a grade with a score of 2 or a grade with a score of 6.
+db.hotels.find({$or :[{"grades.score" :2},{"grades.score" : 6}]})
+
+// 44. Write a MongoDB query to find the restaurants that have a grade with a score of 2 or a grade with a score of 6 and are located in the borough of Manhattan.
+
+// 45. Write a MongoDB query to find the restaurants that have a grade with a score of 2 or a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn.
+db.hotels.find({$and :[
+
+    {$or :[{"borough" :"Manhattan"},{"borough" : "Brooklyn"}]},
+  {$or :[{"grades.score" :2},{"grades.score" : 6}]}
+]})
+
+// 46. Write a MongoDB query to find the restaurants that have a grade with a score of 2 or a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn, and their cuisine is not American.
+
+db.hotels.find({$and :[
+
+    {$or :[{"borough" :"Manhattan"},{"borough" : "Brooklyn"}]},
+  {$or :[{"grades.score" :2},{"grades.score" : 6}]},
+  {cuisine : {$ne :"American"}}
+]})
+
+// 47. Write a MongoDB query to find the restaurants that have a grade with a score of 2 or a grade with a score of 6 and are located in the borough of Manhattan or Brooklyn, and their cuisine is not American or Chinese.
+db.hotels.find({$and :[
+
+    {$or :[{"borough" :"Manhattan"},{"borough" : "Brooklyn"}]},
+  {$or :[{"grades.score" :2},{"grades.score" : 6}]},
+  {$nor : [{cuisine:"American"},{cuisine:"American"}]}
+]})
+
+// 48. Write a MongoDB query to find the restaurants that have all grades with a score greater than 5.
+db.hotels.find({"grades.score" : {$gt:5}}).count()
+
+//--------or ------
+
+  db.restaurants.find({
+  "grades": {
+    "$not": {
+      "$elemMatch": {
+        "score": {
+          "$lte": 5
+        }
+      }
+    }
+  }
+})
+
+// 49. Write a MongoDB query to find the restaurants that have all grades with a score greater than 5 and are located in the borough of Manhattan.
+db.hotels.find({"grades.score" : {$gt:5}},
+               {borough : "Manhattan"}
+              ).count()
+
+// 50. Write a MongoDB query to find the restaurants that have all grades with a score greater than 5 and are located in the borough of Manhattan or Brooklyn.
+
+db.hotels.find({"grades.score" : {$gt:5}},
+               {$and : [{borough : "Manhattan"},{borough : "Brooklyn"}]}
+               
+              ).count()
+
+
+              
