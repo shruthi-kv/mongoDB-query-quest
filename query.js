@@ -445,32 +445,63 @@ db.hotels.find({"grades.score" : {$gt:5}},
 
 
 // 51. Write a MongoDB query to find the average score for each restaurant.
-
+db.hotels.aggregate([
+  {$unwind : "$grades"},
+  {$group : {
+    _id :"$name",
+    avgScore : {$avg : "grades.score"}
+  }}
+])
 
 // 52. Write a MongoDB query to find the highest score for each restaurant.
-
+db.hotels.aggregate([
+  {$unwind : "$grades"},
+  {$group : {
+    _id :"$name",
+    maxScore : {$max :"grades.score"}
+  }}
+])
 
 // 53. Write a MongoDB query to find the lowest score for each restaurant.
-
+db.hotels.aggregate([
+  {$unwind : "$grades"},
+  {$group : {
+    _id :"$name",
+    minScore : {$min :"grades.score"}
+  }}
+])
 
 // 54. Write a MongoDB query to find the count of restaurants in each borough.
-
+db.hotels.aggregate([
+  {$group : {_id:"borough", count :{$sum :1}}}
+])
 
 // 55. Write a MongoDB query to find the count of restaurants for each cuisine.
-
+db.hotels.aggregate([
+  {$group : {_id :"cuisine", count : {$sum:1}}}
+])
 
 // 56. Write a MongoDB query to find the count of restaurants for each cuisine and borough.
 
-
+db.hotels.aggregate([
+  {$group : {_id :{cuisine:"cuisine", borough: "$borough"}, count : {$sum:1}}}
+])
 // 57. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each cuisine.
-
+db.hotels.aggregate([
+  {$unwind : "$grades"},
+  {$match : { "grades.grade" : 'A' }},
+  {$group : {_id:"cuisine", count : {$sum:1}}}
+])
 
 // 58. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each borough.
-
-
 // 59. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each cuisine and borough.
-
+db.hotels.aggregate([
+  {$unwind : "$grades"},
+  {$match : {"grades.grade" :'A'}},
+  {$group : {_id :{cuisine :"cuisine", borough:"borough" , count :{$sum:1}}}}
+])
 
 // 60. Write a MongoDB query to find the number of restaurants that have been graded in each month of the year.
+
 
 
