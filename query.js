@@ -444,4 +444,33 @@ db.hotels.find({"grades.score" : {$gt:5}},
               ).count()
 
 
-              
+// 51. Write a MongoDB query to find the average score for each restaurant.
+
+
+// 52. Write a MongoDB query to find the highest score for each restaurant.
+
+
+// 53. Write a MongoDB query to find the lowest score for each restaurant.
+
+
+// 54. Write a MongoDB query to find the count of restaurants in each borough.
+
+
+// 55. Write a MongoDB query to find the count of restaurants for each cuisine.
+
+
+// 56. Write a MongoDB query to find the count of restaurants for each cuisine and borough.
+
+
+// 57. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each cuisine.
+
+
+// 58. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each borough.
+
+
+// 59. Write a MongoDB query to find the count of restaurants that received a grade of 'A' for each cuisine and borough.
+
+
+// 60. Write a MongoDB query to find the number of restaurants that have been graded in each month of the year.
+
+
